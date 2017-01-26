@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>24h CodeCamp</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+
+    <!-- Plugin CSS -->
+
+    <!-- Theme CSS -->
+    <link href="css/creative.min.css" rel="stylesheet">
+
+</head>
+
+<body id="page-top">
+
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand page-scroll" href="#page-top">24h CodeCamp | Pizza Bestell System</a>
+            </div>
+
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+    <section>
+                
+        <div id="order">
+            
+            <h1>Wähle deine Pizza!</h1>
+            <br>
+            <p>Gib jeweils die Nummer deines Gerichts und den Preis ein. Und versuch erst gar nicht zu schummeln ;) </p>
+
+            <br>
+
+            <form action="order.php" method="post">
+              <input class="full" placeholder="Name" id="input-name" name="name" required><br>
+              <input class="full" placeholder="u-Nummer" id="input-u-nummer" name="id" pattern="^u[0-9]{5}$" required><br>
+              <input class="left" placeholder="Gericht 1" id="input-meal1" name="meal1" pattern="^([0-9]|[0-9][0-9]|1[0-2][0-9]|13[0-2])$" required>
+              <input class="right" placeholder="Preis" id="input-price1" name="price1" pattern="^[0-9]*([,.][0-9][0-9]{0,1}){0,1}$" required><br>
+              <input class="left" placeholder="Gericht 2" id="input-meal2" name="meal2" pattern="^([0-9]|[0-9][0-9]|1[0-2][0-9]|13[0-2])$">
+              <input class="right" placeholder="Preis" id="input-price2" name="price2" pattern="^[0-9]*([,.][0-9][0-9]{0,1}){0,1}$"><br>
+              <input class="left" placeholder="Gericht 3" id="input-meal3" name="meal3" pattern="^([0-9]|[0-9][0-9]|1[0-2][0-9]|13[0-2])$">
+              <input class="right" placeholder="Preis" id="input-price3" name="price3" pattern="^[0-9]*([,.][0-9][0-9]{0,1}){0,1}$"><br>
+              
+              <p class="full" id="total-container">_________<br>Summe: <span id="total">0,00</span> €</p>
+              <button class="full" type="submit" id="submit">Bestellen</button>
+              
+            </form>
+            
+
+
+        </div>
+        <div id="objectContainer" style="display: hidden;">
+            <object id="menu" type="text/html" data="http://www.la-collina.de/lieferkarte#Pizza" onload="object_loaded()">
+                <param name="view" value="fitH" />
+            </object>
+        </div>
+                
+    </section>
+
+
+
+    
+
+    <style>
+
+        body {
+
+            width: 100%;
+            height: 100%;
+
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+
+            background-position: center;
+            background-image: url(./img/header.jpg);
+            color: #fff;
+
+            padding: 0;
+            margin: 0;
+        }
+
+        section {
+
+            width: 100%;
+            max-width: 1360px;
+            height: 100%;
+
+            padding: 70px 0 10px;
+            margin: 0 auto;
+        }
+
+        #order {
+            height: 100%;
+            width: 25%;
+            float: left; 
+            padding: 0 10px;
+        }
+
+        object {
+            height: 92vh;
+            width: 75%;
+            
+            border: 0;
+            padding: 0 10px;
+            float: right;
+        }
+
+        input {
+            border-radius:5px;
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+
+            background-color: rgba(255,255,255,0.2);
+            border-style: none;
+
+            padding: 4px 8px;
+            margin: 5px 0;
+
+            color: #ffffff;
+        }
+
+        input.full, p.full, button.full {
+            width: 100%;
+        }
+
+        input.left, p.left, button.left {
+            width: 60%;
+            float: left;
+        }
+
+        input.right, p.right, button.right {
+            width: 35%;
+            float: right;
+        }
+
+        input:focus, button:focus{
+            outline: none;
+        }
+
+        button {
+            width: 33.3%;
+            border-radius:5px;
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+
+            background-color: rgba(255,255,255,0.2);
+            border-style: none;
+
+            padding: 10px 10px;
+            margin: 5px 0;
+
+            color: #ffffff;
+            -webkit-transition: background-color 200ms linear;
+            -ms-transition: background-color 200ms linear;
+            transition: background-color 200ms linear;
+        }
+
+        button:hover {
+            background-color: rgba(255,255,255,0.4);
+            -webkit-transition: background-color 200ms linear;
+            -ms-transition: background-color 200ms linear;
+            transition: background-color 200ms linear;
+        }
+
+        #total-container {
+            font-size: 1.5em;
+            padding: 10px 0;
+            padding-left: 5px;
+            
+        }
+
+        #total {
+            display: inline-block;
+            font-size: inherit;
+        }
+
+    </style>
+
+    <!-- jQuery -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+
+
+
+    <script type="text/javascript">
+
+
+        function object_loaded() {
+            $(window).trigger('resize');
+            $('#objectContainer').fadeIn(10000);
+        }
+
+        $( "input" ).keyup(function() {
+
+            var meal1 = 0;
+            var meal2 = 0;
+            var meal3 = 0;
+            var recalculate = false;
+
+            if ($('#input-price1').val() != "" && $('#input-price1').val().match($('#input-price1').prop('pattern'))) {
+                meal1 = $('#input-price1').val().replace(",",".");
+                recalculate = true;
+            }
+
+            if ($('#input-price2').val() != "" && $('#input-price2').val().match($('#input-price2').prop('pattern'))) {
+                meal2 = $('#input-price2').val().replace(",",".");
+                recalculate = true;
+            }
+
+            if ($('#input-price3').val() != "" && $('#input-price3').val().match($('#input-price3').prop('pattern'))) {
+                meal3 = $('#input-price3').val().replace(",",".");
+                recalculate = true;
+            }
+
+            if (recalculate) {
+                var total = (meal1*100+meal2*100+meal3*100)/100;
+                total = (total+"").replace(".",",");
+
+                if (total.indexOf(",") > 0 && (total.length - total.indexOf(",")) == 2) total += "0"
+
+                $('#total').text(total);
+            }
+            
+        });
+
+        $('input').on( "focusout", function() {
+            if (!$(this).val().match($(this).prop('pattern'))) {
+                $(this).css('box-shadow', '0 0 6px red');
+            } else {
+                $(this).css('box-shadow', 'none');
+            }
+        });
+
+        $('input').on( "focusin", function() {
+            $(this).css('box-shadow', 'none');
+        });
+
+
+    </script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="vendor/scrollreveal/scrollreveal.min.js"></script>
+    <script src="vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+    <!-- Theme JavaScript -->
+    <script src="js/creative.min.js"></script>
+
+</body>
+
+</html>

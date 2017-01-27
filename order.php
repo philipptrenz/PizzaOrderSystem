@@ -84,19 +84,19 @@
 
         if (!empty($_POST["meal1"]) &&  !empty($_POST["price1"])) {
             $meal = $_POST["meal1"];
-            $cost = $_POST["price1"];
+            $cost = str_replace(",",".",$_POST["price1"]);
             $sql = " INSERT INTO orders (id, name, cost, meal) VALUES ('$id', '$name', '$cost', '$meal');";
             mysqli_query($conn, $sql) or die(mysqli_error($conn));
         }
         if (!empty($_POST["meal2"]) &&  !empty($_POST["price2"])) {
             $meal = $_POST["meal2"];
-            $cost = $_POST["price2"];
+            $cost = str_replace(",",".",$_POST["price2"]);
             $sql = " INSERT INTO orders (id, name, cost, meal) VALUES ('$id', '$name', '$cost', '$meal');";
             mysqli_query($conn, $sql) or die(mysqli_error($conn));
         }
         if (!empty($_POST["meal3"]) &&  !empty($_POST["price3"])) {
             $meal = $_POST["meal3"];
-            $cost = $_POST["price3"];
+            $cost = str_replace(",",".",$_POST["price3"]);
             $sql = " INSERT INTO orders (id, name, cost, meal) VALUES ('$id', '$name', '$cost', '$meal');";
             mysqli_query($conn, $sql) or die(mysqli_error($conn));
         }

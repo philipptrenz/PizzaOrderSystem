@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
 
@@ -102,7 +102,7 @@
 
 
     // sorted by customer
-    $sql = "SELECT id, name, SUM(cost) AS total FROM orders GROUP BY id ORDER BY name ASC";
+    $sql = "SELECT id, name, SUM(cost) AS total FROM orders GROUP BY id, name ORDER BY name ASC";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {

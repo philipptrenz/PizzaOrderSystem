@@ -44,9 +44,8 @@
             <div class="header-content-inner">
 
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
+
+    include 'config.php';
 
     function foo()
 	{

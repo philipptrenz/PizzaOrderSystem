@@ -42,9 +42,8 @@
             <div class="header-content-inner">
 
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
+
+    include 'config.php';
 
     // Create connection
     $conn = mysqli_connect($servername, $username, $password, "pizza");
@@ -64,8 +63,11 @@
 		$row = mysqli_fetch_assoc($result);
 		echo "<p>Es wurden bisher ".$row['anzahl']." Gerichte bestellt</p><br>";
 	} else {
-	    echo "0 results";
+	    echo "<p>Noch keine Bestellungen</p><br>";
 	}
+
+
+
 
     // sorted and count by number
     $sql = "SELECT COUNT(`meal`) AS `anzahl`, `meal` FROM `orders` GROUP BY `meal` ORDER BY `meal` ASC";
@@ -77,11 +79,17 @@
 	        echo  $row["anzahl"]. "x  &nbsp;&nbsp;#" . $row["meal"]."<br>";
 	    }
 	    echo "</p><br>";
-	} else {
-	    echo "0 results";
 	}
 
+
+
+
     // sorted by customer
+    $sql = "SELECT id, name, SUM(cost) AS total FROM orders GROUP BY id ORDER BY name ASC";
+    $result = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows($result) > 0) {
+
     ?>
         <h2>Zu zahlen</h2><br>
         <table>
@@ -96,11 +104,7 @@
             </thead>
             <tbody>
 
-    <?php   
-    $sql = "SELECT id, name, SUM(cost) AS total FROM orders GROUP BY id ORDER BY name ASC";
-    $result = mysqli_query($conn, $sql);
-
-    if (mysqli_num_rows($result) > 0) {
+    <?php
         while($row = mysqli_fetch_assoc($result)) {
             $name = $row["name"];
             $id = $row["id"];

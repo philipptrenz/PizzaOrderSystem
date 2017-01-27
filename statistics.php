@@ -165,6 +165,11 @@
     </section>
 
     <style>
+
+        html {
+            background-color: black;
+        }
+
     	body {
 
             width: 100%;

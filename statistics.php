@@ -44,6 +44,7 @@
                 
         <div class="header-content">
             <div class="header-content-inner">
+                <h1 id='homeHeading'>Bestellübersicht</h1><br>
 
 <?php
 
@@ -56,8 +57,6 @@
         die("Connection failed: " . mysqli_connect_error());
     }
 
-
-    echo "<h1 id='homeHeading'>Bestellübersicht</h1><br>";
 
 
     // Total
@@ -84,6 +83,20 @@
 	    }
 	    echo "</p><br>";
 	}
+
+
+
+    $sql2 = "SELECT meal, cost, paid FROM orders WHERE id='$id' ORDER BY meal ASC";
+    $result2 = mysqli_query($conn, $sql2);
+
+    $paid = true;
+    if (mysqli_num_rows($result2) > 0) {
+        while($row2 = mysqli_fetch_assoc($result2)) {
+            echo $row2['meal']." (".$row2['cost']." €)<br>";
+            $paid = $paid && $row2['paid'];
+        }
+    } 
+
 
 
 
@@ -116,8 +129,8 @@
             
     ?>
             <tr>
-                <td><?php echo  $name ?></td>
-                <td><?php echo  $id ?></td>
+                <td><?php echo $name ?></td>
+                <td><?php echo $id ?></td>
                 <td>
 
                 <?php 
@@ -138,7 +151,7 @@
                 <td><?php echo  $total ?> €</td>
                 <td>
                     <input class="checkbox" type="checkbox" <?php if ($paid) echo "checked='checked'"?> >
-                    </td>
+                </td>
             </tr>
     <?php
         }

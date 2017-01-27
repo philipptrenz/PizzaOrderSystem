@@ -167,7 +167,7 @@
     <style>
 
         html {
-            background-image: url(./img/header.jpg);
+            background: #4A423F url(./img/header.jpg);
         }
 
     	body {

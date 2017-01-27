@@ -245,8 +245,10 @@
             }
         });
 
-        reload = setTimeout(function(){
-           window.location.reload(1);
+        reload = setTimeout( function(){
+            $('body').fadeOut(500, function(){
+                window.location.reload(1);
+            });
         }, 5000);
 
         $( "#auto-update" ).click(function() {
@@ -255,8 +257,10 @@
                 clearTimeout(reload);
             } else {
                 $( "#auto-update" ).text("auto update on");
-                reload = setTimeout(function(){
-                   window.location.reload(1);
+                reload = setTimeout( function(){
+                    $('body').fadeOut(500, function(){
+                        window.location.reload(1);
+                    });
                 }, 5000);
             }
         });

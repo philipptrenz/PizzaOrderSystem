@@ -32,6 +32,10 @@
                 <a class="navbar-brand page-scroll" href="#page-top">24h CodeCamp | Pizza Bestell System</a>
             </div>
 
+            <div class="navbar-header" style="float: right;">
+                <a class="navbar-brand page-scroll" id="auto-update">auto update on</a>
+            </div>
+
         </div>
         <!-- /.container-fluid -->
     </nav>
@@ -74,7 +78,7 @@
     $result = mysqli_query($conn, $sql);
 	if (mysqli_num_rows($result) > 0) {
 
-	    echo "<h2>Statistik</h2><br><p>";
+	    echo "<br><p>";
 	    while($row = mysqli_fetch_assoc($result)) {
 	        echo  $row["anzahl"]. "x  &nbsp;&nbsp;#" . $row["meal"]."<br>";
 	    }
@@ -233,6 +237,22 @@
 
             if(this.checked) {
                 console.log(id+' checked');
+            }
+        });
+
+        reload = setTimeout(function(){
+           window.location.reload(1);
+        }, 5000);
+
+        $( "#auto-update" ).click(function() {
+            if($( "#auto-update" ).text() == "auto update on") {
+                $( "#auto-update" ).text("auto update off");
+                clearTimeout(reload);
+            } else {
+                $( "#auto-update" ).text("auto update on");
+                reload = setTimeout(function(){
+                   window.location.reload(1);
+                }, 5000);
             }
         });
     </script>

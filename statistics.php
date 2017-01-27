@@ -23,7 +23,7 @@
 
 </head>
 
-<body id="page-top">
+<body id="page-top" style="display: none;">
 
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -231,6 +231,11 @@
     <script src="vendor/jquery/jquery.min.js"></script>
 
     <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('body').fadeIn(500);
+        });
+
         $(".checkbox").change(function() {
 
             var id = $(':nth-child(2)', this.parent()).text()

@@ -33,7 +33,7 @@
             </div>
 
             <div class="navbar-header" style="float: right;">
-                <a class="navbar-brand page-scroll" id="auto-update">auto update on</a>
+                <a class="navbar-brand page-scroll" id="auto-update">auto update off</a>
             </div>
 
         </div>
@@ -46,131 +46,29 @@
             <div class="header-content-inner">
                 <h1 id='homeHeading'>Bestellübersicht</h1><br>
 
-<?php
+                <p>Es wurden bisher <span id="total-orders">unbekannt viele</span> Gerichte bestellt</p><br>
 
-    include 'config.php';
+                <br>
 
-    // Create connection
-    $conn = mysqli_connect($servername, $username, $password, "pizza");
-    // Check connection
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
-    }
+                <table id="orders-by-meal-nr"></table>
 
+                <br>
 
+                <h2>Zu zahlen</h2><br>
 
-    // Total
-    $sql = "SELECT COUNT(*) AS anzahl FROM orders";
-    $result = mysqli_query($conn, $sql);
-	if (mysqli_num_rows($result) > 0) {
-		$row = mysqli_fetch_assoc($result);
-		echo "<p>Es wurden bisher ".$row['anzahl']." Gerichte bestellt</p><br>";
-	} else {
-	    echo "<p>Noch keine Bestellungen</p><br>";
-	}
-
-
-
-
-    // sorted and count by number
-    $sql = "SELECT COUNT(`meal`) AS `anzahl`, `meal` FROM `orders` GROUP BY `meal` ORDER BY `meal` ASC";
-    $result = mysqli_query($conn, $sql);
-	if (mysqli_num_rows($result) > 0) {
-
-	    echo "<br><p>";
-	    while($row = mysqli_fetch_assoc($result)) {
-	        echo  $row["anzahl"]. "x  &nbsp;&nbsp;#" . $row["meal"]."<br>";
-	    }
-	    echo "</p><br>";
-	}
-
-
-
-    $sql2 = "SELECT meal, cost, paid FROM orders WHERE id='$id' ORDER BY meal ASC";
-    $result2 = mysqli_query($conn, $sql2);
-
-    $paid = true;
-    if (mysqli_num_rows($result2) > 0) {
-        while($row2 = mysqli_fetch_assoc($result2)) {
-            echo $row2['meal']." (".$row2['cost']." €)<br>";
-            $paid = $paid && $row2['paid'];
-        }
-    } 
-
-
-
-
-
-    // sorted by customer
-    $sql = "SELECT id, name, SUM(cost) AS total FROM orders GROUP BY id, name ORDER BY name ASC";
-    $result = mysqli_query($conn, $sql);
-
-    if (mysqli_num_rows($result) > 0) {
-
-    ?>
-        <h2>Zu zahlen</h2><br>
-        <table>
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>u-Nummer</th>
-                    <th>Gerichte</th>
-                    <th>Gesamtsumme</th>
-                    <th>Bezahlt</th>
-                </tr>
-            </thead>
-            <tbody>
-
-    <?php
-        while($row = mysqli_fetch_assoc($result)) {
-            $name = $row["name"];
-            $id = $row["id"];
-            $total = $row["total"];
-            
-    ?>
-            <tr>
-                <td><?php echo $name ?></td>
-                <td><?php echo $id ?></td>
-                <td>
-
-                <?php 
-
-                $sql2 = "SELECT meal, cost, paid FROM orders WHERE id='$id' ORDER BY meal ASC";
-                $result2 = mysqli_query($conn, $sql2);
-
-                $paid = true;
-                if (mysqli_num_rows($result2) > 0) {
-                    while($row2 = mysqli_fetch_assoc($result2)) {
-                        echo $row2['meal']." (".$row2['cost']." €)<br>";
-                        $paid = $paid && $row2['paid'];
-                    }
-                } 
-
-                ?>
-                </td>
-                <td><?php echo  $total ?> €</td>
-                <td>
-                    <input class="checkbox" type="checkbox" <?php if ($paid) echo "checked='checked'"?> >
-                </td>
-            </tr>
-    <?php
-        }
-    ?>             
-            </tbody>
-        </table>
-        <br>
-
-<?php
-	}          
-
-    mysqli_close($conn);
-?>
-
-
-
-
-
-
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>u-Nummer</th>
+                            <th>Gerichte</th>
+                            <th>Gesamtsumme</th>
+                            <th>Bezahlt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-by-customer">               
+                    </tbody>
+                </table>
 
             </div>
         </div>
@@ -225,6 +123,15 @@
             border: none;
         }
 
+        #orders-by-meal-nr td {
+            padding: 2px 10px;
+        }
+
+        table.inner td {
+            padding: 2px 10px;
+            border: none;
+        }
+
         input.checkbox {
             margin: 0 auto;
         }
@@ -250,9 +157,66 @@
 
     <script type="text/javascript">
 
+
+        var json;  
+        ajaxRequest();  
+
         $(document).ready(function () {
             $('body').fadeIn(500);
         });
+
+        function ajaxRequest() {
+            $.getJSON( "stats.php", function( data ) {
+                console.log(data);
+
+                if (json == null || JSON.stringify(data) != JSON.stringify(json)) {
+                    
+                    $('#total-orders').text(data.total_orders);
+
+                    if( !json || json.per_meal != data.per_meal) {
+
+                        $('#orders-by-meal-nr').fadeOut(500, function() {
+                            $('#orders-by-meal-nr').empty();
+                            for (var i = 0; i < data.per_meal.length; i++) {
+                                var string = "<tr><td>"+data.per_meal[i].total+"x</td><td>#"+data.per_meal[i].meal+"</td></tr>";
+                                $(string).appendTo('#orders-by-meal-nr');
+                            }
+                            $('#orders-by-meal-nr').fadeIn(500);
+                        });
+
+                    }
+                    
+
+                    if ( !json || json.per_customer != data.per_customer) {
+
+                        $('#orders-by-customer').fadeOut(500, function() {
+                            $('#orders-by-customer').empty();
+                            for (var i = 0; i < data.per_customer.length; i++) {
+                                var customer = data.per_customer[i];
+                                var overview = "<table class='inner'>";
+                                for (var j = 0; j < customer.overview.length; j++) {
+                                    var purchase = customer.overview[j];
+                                    overview += "<tr><td>"+purchase.meal+"</td><td>("+purchase.cost+" €)</td></tr>"
+                                }
+                                overview += "</table>";
+                                var string = 
+                                    "<tr>"+
+                                        "<td>"+customer.name+"</td>"+
+                                        "<td>"+customer.id+"</td>"+
+                                        "<td>"+overview+"</td>"+
+                                        "<td>"+customer.total+"</td>"+
+                                        "<td><input class='checkbox' type='checkbox'"+(customer.paid ? "checked='checked'" : "")+"></td>"+
+                                    "</tr>";
+                                $(string).appendTo('#orders-by-customer');
+                            }
+                            $('#orders-by-customer').fadeIn(500);
+                        });
+
+                    }
+                    json = data;
+                } 
+            });
+        }
 
         $(".checkbox").change(function() {
 
@@ -263,23 +227,17 @@
             }
         });
 
-        reload = setTimeout( function(){
-            $('body').fadeOut(500, function(){
-                window.location.reload(1);
-            });
-        }, 5000);
-
+        var reload;
         $( "#auto-update" ).click(function() {
             if($( "#auto-update" ).text() == "auto update on") {
                 $( "#auto-update" ).text("auto update off");
                 clearTimeout(reload);
             } else {
                 $( "#auto-update" ).text("auto update on");
-                reload = setTimeout( function(){
-                    $('body').fadeOut(500, function(){
-                        window.location.reload(1);
-                    });
-                }, 5000);
+                ajaxRequest();
+                 reload = setInterval( function(){
+                    ajaxRequest();
+                }, 3000);
             }
         });
     </script>
